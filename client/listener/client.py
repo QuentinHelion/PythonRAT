@@ -4,10 +4,7 @@ import socket
 class Client:
     def __init__(self, host, port=8888):
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        try:
-            self.sock.connect((host, port))
-        except ConnectionRefusedError:
-            print("Connection refused")
+        self.sock.bind(('', port))
 
     def send(self, data):
         try:
@@ -17,7 +14,8 @@ class Client:
             return False
 
     def listen(self):
+        self.sock.listen(5)
         while True:
-            data = self.sock.recv(4096)
-            if data:
-                return print(data)
+            conn, addr = self.sock.accept()
+            data = conn.recv(4096)
+            return data

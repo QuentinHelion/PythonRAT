@@ -4,14 +4,13 @@ import socket
 class Server:
     def __init__(self, port=8888):
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.sock.bind(('', port))
+        self.sock.connect(('127.0.0.1', port))
 
     def listen(self):
         self.sock.listen(5)
         while True:
             conn, addr = self.sock.accept()
-            data = conn.recv(4096)
-            return data
+            return conn.recv(4096)
 
     def stop(self):
         self.sock.close()
@@ -19,4 +18,3 @@ class Server:
 
     def send(self, data):
         self.sock.sendall(data)
-        return self.sock.recv(4096)

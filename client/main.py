@@ -1,18 +1,20 @@
-from time import sleep
 from listener.client import Client
+from listener.cipher import Cipher
 import json
 
 
 def main():
     listener = Client('127.0.0.1', 8888)
+    cipher = Cipher()
 
     print('Listening on port 8888...')
     while True:
         data = listener.listen()
-        data = json.loads(data.decode('utf-8'))
+        data = cipher.decrypt_message(data)
+        data = json.loads(data)
         if data is not None:
-            print(data["message"])
-            data = None
+            print(data)
+            # data = None
 
 
 if __name__ == '__main__':

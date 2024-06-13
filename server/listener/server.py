@@ -17,8 +17,4 @@ class Server:
         self.sock = None
 
     def send(self, data):
-        try:
-            self.sock.sendall(data)
-            return True
-        except:
-            return False
+        self.sock.sendall(data)

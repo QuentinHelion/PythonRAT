@@ -28,4 +28,9 @@ class Communication:
         while True:
             conn, addr = self.sock.accept()
             data = conn.recv(4096)
-            return data
+
+            if data:
+                return {
+                    "data": data,
+                    "conn": conn
+                }

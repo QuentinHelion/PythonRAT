@@ -12,8 +12,13 @@ class Communication:
         sock.listen(5)
         while True:
             conn, addr = sock.accept()
+            data = conn.recv(4096)
             sock.close()
-            return addr
+            if data:
+                return {
+                    "data": data,
+                    "addr": addr
+                }
 
     def listen(self):
         self.sock.listen(5)

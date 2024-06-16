@@ -33,6 +33,8 @@ def main():
         command = input("> ").strip()
         if ' ' in command:
             command, params = command.split(' ', 1)
+        else:
+            params = ""
 
         if command == "help":
             help()
@@ -49,8 +51,8 @@ def main():
             }).encode('utf-8')
             response = listener.prompt(cipher.encrypt_message(request))
             decrypted = cipher.decrypt_message(response)
-            print(response)
-            print(json.loads(decrypted))
+            result = json.loads(decrypted)
+            print(result["response"].encode('utf-8'))
 
         else:
             data = json.dumps(

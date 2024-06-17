@@ -46,8 +46,6 @@ def main():
 
             if data['type'] == 'command':
                 if system_os == 'Windows':
-                    # proc = subprocess.Popen('cmd.exe', stdin=subprocess.PIPE, stdout=subprocess.PIPE)
-                    # stdout, stderr = proc.communicate(data['action'], data['params'])
 
                     command = data['action'] + ' ' + data['params']
                     result = subprocess.run(command, shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)

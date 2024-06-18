@@ -48,7 +48,8 @@ def main():
                 if system_os == 'Windows':
 
                     command = data['action']
-                    result = subprocess.run(command, shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+                    result = subprocess.run(command)
+                    # result = subprocess.run(command, shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
 
                     response = json.dumps({
                         'status': 'OK',

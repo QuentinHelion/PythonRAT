@@ -3,6 +3,8 @@ from listener.cipher import Cipher
 from tools.env import EnvReader
 from commands.help import help
 import json
+from time import sleep
+
 
 
 def main():
@@ -21,6 +23,8 @@ def main():
             break
         else:
             print(client_init)
+
+    sleep(3)
 
     listener.connect(client_addr)
 

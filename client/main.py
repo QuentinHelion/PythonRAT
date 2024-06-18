@@ -51,7 +51,7 @@ def main():
 
                 response = json.dumps({
                     'status': 'OK',
-                    'response': result.stdout.encode('utf-8')
+                    'response': result.stdout
                 }).encode('utf-8')
 
                 print(response)

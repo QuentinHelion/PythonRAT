@@ -6,6 +6,7 @@ class Communication:
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.host = host
         self.port = port
+        self.conn = None
 
     def init_send(self, data):
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -14,7 +15,9 @@ class Communication:
         sock.close()
 
     def init_listen(self):
-        self.sock.bind(('', self.port))
+        self.sock.bind(('127.0.0.1', self.port))
+        self.sock.listen()
+        self.conn, addr = self.sock.accept()
 
     def send(self, data):
         try:
@@ -24,13 +27,10 @@ class Communication:
             return False
 
     def listen(self):
-        self.sock.listen(5)
         while True:
-            conn, addr = self.sock.accept()
-            data = conn.recv(4096)
-
+            data = self.conn.recv(4096)
             if data:
                 return {
                     "data": data,
-                    "conn": conn
+                    "conn": self.conn
                 }

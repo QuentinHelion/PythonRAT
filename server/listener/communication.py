@@ -8,8 +8,8 @@ class Communication:
 
     def init_listen(self):
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        sock.bind(('', self.port))
-        sock.listen(5)
+        sock.bind(('127.0.0.1', self.port))
+        sock.listen()
         while True:
             conn, addr = sock.accept()
             data = conn.recv(4096)
@@ -21,7 +21,6 @@ class Communication:
                 }
 
     def listen(self):
-        self.sock.listen(5)
         while True:
             conn, addr = self.sock.accept()
             return conn.recv(4096)
@@ -38,5 +37,5 @@ class Communication:
 
     def prompt(self, data):
         self.sock.sendall(data)
-        return self.sock.recv(4096)
-
+        result = self.sock.recv(4096)
+        return result

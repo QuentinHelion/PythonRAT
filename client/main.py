@@ -47,7 +47,7 @@ def main():
             if data['type'] == 'command':
                 if system_os == 'Windows':
 
-                    command = data['action'] + ' ' + data['params']
+                    command = data['action']
                     result = subprocess.run(command, shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
 
                     response = json.dumps({

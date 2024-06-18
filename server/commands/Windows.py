@@ -4,4 +4,4 @@ class WindowsCommands:
         return "ipconfig"
 
     def search(self, filename):
-        return "dir /s /b | findstr /i " + filename
+        return "cd / | dir /s /b | findstr /i " + filename

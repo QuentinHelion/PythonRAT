@@ -4,4 +4,4 @@ class LinuxCommands:
         return "ip a"
 
     def search(self, filename):
-        return "find " + filename
+        return "cd / | find " + filename

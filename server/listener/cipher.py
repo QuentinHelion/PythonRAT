@@ -19,3 +19,9 @@ class Cipher:
         decrypted = cipher.decrypt(message)
         unpadded = unpad(decrypted, AES.block_size)
         return unpadded.decode(self.charset)
+
+    def decrypt_image(self, message):
+        cipher = AES.new(self.key, self.mode, self.iv)
+        decrypted = cipher.decrypt(message)
+        unpadded = unpad(decrypted, AES.block_size)
+        return unpadded

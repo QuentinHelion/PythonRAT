@@ -4,6 +4,10 @@ from Cryptodome.Util.Padding import pad, unpad
 
 class Cipher:
     def __init__(self, key, iv, charset='utf-8'):
+        if len(key) not in [16, 24, 32]:
+            raise ValueError("Key must be 16, 24, or 32 bytes long")
+        if len(iv) != 16:
+            raise ValueError("IV must be 16 bytes long")
         self.key = key
         self.iv = iv
         self.mode = AES.MODE_CBC

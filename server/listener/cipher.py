@@ -18,4 +18,4 @@ class Cipher:
         cipher = AES.new(self.key, self.mode, self.iv)
         decrypted = cipher.decrypt(message)
         unpadded = unpad(decrypted, AES.block_size)
-        return unpadded.decode(self.charset)
+        return unpadded
